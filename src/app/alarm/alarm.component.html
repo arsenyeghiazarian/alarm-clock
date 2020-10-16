@@ -1,0 +1,22 @@
+<div class="alert alert-danger" role="alert" *ngIf="showAlert">
+    This Date Already Passed
+</div>
+<form>
+    <div class="form-group">
+        <label for="alarmTime">Choose time</label>
+        <input type="datetime-local" id="alarmTime"
+               name="alarmTime" class="form-control"
+               (change)="onInputChange($event)"/>
+    </div>
+    <button type="button" class="btn btn-dark btn-block"
+            *ngIf="!isAlarmActive"
+            [disabled]="!inputValue"
+            (click)="setAlarm()">
+        Set Alarm
+    </button>
+    <button type="button" class="btn btn-dark btn-block"
+            *ngIf="isAlarmActive"
+            (click)="stopAlarm()">
+        Stop Alarm
+    </button>
+</form>

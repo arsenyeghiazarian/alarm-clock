@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-alarm',
@@ -8,9 +8,12 @@ import { Component } from '@angular/core';
 export class AlarmComponent {
   public inputValue: number;
   public isAlarmActive: boolean;
+  public isAlarmSet: boolean;
   public showAlert: boolean;
-  private audio = new Audio('../assets/sound.mp3')
+  private audio = new Audio('../assets/sound.mp3');
   private setTimeoutId: number;
+
+  @ViewChild('alarmInput') alarmInput: ElementRef<any>;
 
   constructor() { }
 
@@ -23,20 +26,40 @@ export class AlarmComponent {
     let alarm = new Date(this.inputValue);
     let alarmTime = new Date(alarm.getUTCFullYear(), alarm.getUTCMonth(), alarm.getUTCDate(),  alarm.getUTCHours(), alarm.getUTCMinutes(), alarm.getUTCSeconds());
     let timeDifferenceInMs = alarmTime.getTime() - (new Date().getTime());
+
     if(timeDifferenceInMs < 0) {
       this.showAlert = true;
       return
     }
-    this.isAlarmActive = true;
+    this.isAlarmSet = true;
     this.setTimeoutId = setTimeout(() => {
-      this.audio.play();
+      this.alarm()
     }, timeDifferenceInMs)
-
   }
 
-  public stopAlarm() {
-    this.isAlarmActive = false;
-    this.audio.pause()
+  public cancelAlarm() {
     clearTimeout(this.setTimeoutId)
+    this.isAlarmSet = false;
+    this.alarmInput.nativeElement.value = '';
+  }
+
+  public stopAlarm(state) {
+    this.audio.pause()
+    this.isAlarmActive = false;
+    if(state !== 'snooze') this.alarmInput.nativeElement.value = '';
+  }
+
+  public snoozeAlarm() {
+    this.stopAlarm('snooze')
+    this.setTimeoutId = setTimeout(() => {
+      this.alarm()
+    }, 5 * 60 * 1000)
+  }
+
+  private alarm() {
+    this.audio.loop = true;
+    this.audio.play();
+    this.isAlarmSet = false;
+    this.isAlarmActive = true;
   }
 }

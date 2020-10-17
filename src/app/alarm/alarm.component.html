@@ -1,22 +1,42 @@
-<div class="alert alert-danger" role="alert" *ngIf="showAlert">
-    This Date Already Passed
-</div>
-<form>
-    <div class="form-group">
-        <label for="alarmTime">Choose time</label>
-        <input type="datetime-local" id="alarmTime"
-               name="alarmTime" class="form-control"
-               (change)="onInputChange($event)"/>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <form>
+                <div class="form-group">
+                    <label for="alarmTime">Choose time</label>
+                    <input type="datetime-local" id="alarmTime"
+                           name="alarmTime" class="form-control"
+                           #alarmInput
+                           (change)="onInputChange($event)"/>
+                </div>
+                <button type="button" class="btn btn-primary btn-block"
+                        *ngIf="!isAlarmActive && !isAlarmSet"
+                        [disabled]="!inputValue"
+                        (click)="setAlarm()">
+                    Set Alarm
+                </button>
+                <button type="button" class="btn btn-dark btn-block"
+                        *ngIf="!isAlarmActive && isAlarmSet"
+                        (click)="cancelAlarm()">
+                    Cancel Alarm
+                </button>
+                <div class="row" *ngIf="isAlarmActive">
+                    <div class="col-6">
+                        <button type="button" class="btn btn-block btn-success" (click)="stopAlarm()">
+                            Stop Alarm
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button type="button" class="btn btn-block btn-info" (click)="snoozeAlarm()">
+                            Snooze 5 minutes
+                        </button>
+                    </div>
+                </div>
+
+                <div class="alert alert-danger mt-3" role="alert" *ngIf="showAlert">
+                    This Date Already Passed
+                </div>
+            </form>
+        </div>
     </div>
-    <button type="button" class="btn btn-dark btn-block"
-            *ngIf="!isAlarmActive"
-            [disabled]="!inputValue"
-            (click)="setAlarm()">
-        Set Alarm
-    </button>
-    <button type="button" class="btn btn-dark btn-block"
-            *ngIf="isAlarmActive"
-            (click)="stopAlarm()">
-        Stop Alarm
-    </button>
-</form>
+</div>

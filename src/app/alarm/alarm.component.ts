@@ -40,6 +40,7 @@ export class AlarmComponent {
   public cancelAlarm() {
     clearTimeout(this.setTimeoutId)
     this.isAlarmSet = false;
+    this.inputValue = 0;
     this.alarmInput.nativeElement.value = '';
   }
 
